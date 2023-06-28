@@ -36,5 +36,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/AurelieDL/chat-project.git",
+  "author": "AurelieDL <91252299+AurelieDL@users.noreply.github.com>",
+  "license": "MIT"
 }

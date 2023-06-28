@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Add from "../img/addAvatar.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage } from "../firebase";
+import { auth, storage, db } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
   const [err, setErr] = useState(false);
@@ -14,6 +15,7 @@ const Register = () => {
     const file = e.target[3].files[0];
 
     try {
+      //Create user
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
       const storageRef = ref(storage, displayName);
@@ -28,6 +30,13 @@ const Register = () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             await updateProfile(res.user, {
               displayName,
+              photoURL: downloadURL,
+            });
+
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              displayName,
+              email,
               photoURL: downloadURL,
             });
           });
@@ -47,7 +56,7 @@ const Register = () => {
           <input type="text" placeholder="pseudo"></input>
           <input type="email" placeholder="email"></input>
           <input type="password" placeholder="mot de passe"></input>
-          <input style={{ display: "none" }} type="file" id="file/"></input>
+          <input style={{ display: "none" }} type="file" id="file" />
           <label htmlFor="file">
             <img src={Add} alt=""></img>
             <span>Ajouter un avatar</span>
